@@ -1,0 +1,44 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+    defaultConfig {
+        applicationId "com.undcover.lovemusic"
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions { // java 版本
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    dataBinding {
+        enabled = true
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+
+//    kapt "com.android.databinding:compiler:$gradle_version"
+    rootProject.ext.support.each { k, v -> implementation v }
+//    rootProject.ext.kotlin.each { k, v -> implementation v }
+//    rootProject.ext.okhttp3.each { k, v -> implementation v }
+//    rootProject.ext.rxlifecycle.each { k, v -> implementation v }
+//    rootProject.ext.retrofit2.each { k, v -> implementation v }
+//    rootProject.ext.rxjava2.each { k, v -> implementation v }
+    rootProject.ext.library.each { k, v -> implementation v }
+}
