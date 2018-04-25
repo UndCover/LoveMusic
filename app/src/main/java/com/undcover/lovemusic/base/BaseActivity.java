@@ -2,7 +2,6 @@ package com.undcover.lovemusic.base;
 
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
-import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -16,11 +15,12 @@ import com.undcover.lovemusic.util.SmartLog;
  * Created by UndCover on 10/31/17.
  */
 
-public abstract class BaseActivity extends AppCompatActivity implements BaseMvpView {
+public abstract class BaseActivity<B, P extends BaseMvpPresenter,VM> extends AppCompatActivity implements BaseMvpView<VM>{
     protected String TAG = this.getClass().getSimpleName();
-    protected ViewDataBinding baseDataBinding;
+    protected B mBinding;
     protected static SmartApp mApp;
     protected boolean isPortrait = true;
+    protected P mPresenter;
 
     public abstract int getContentViewId();
 
@@ -42,7 +42,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvpV
         beforeSetContent();
         setContent();
         initPublicView();
-        bindView();
+        bindPresenter();
         initChildData();
         initFragment();
         initListView();
@@ -52,7 +52,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvpV
      * 用于自定义View的binding方式
      */
     protected void setContent() {
-        baseDataBinding = DataBindingUtil.setContentView(this, getContentViewId());
+        mBinding = (B) DataBindingUtil.setContentView(this, getContentViewId());
     }
 
     /**
@@ -69,8 +69,16 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvpV
     /**
      * 用于绑定视图
      */
-    protected void bindView() {
-        SmartLog.fw(TAG, "bindView");
+    protected void bindPresenter() {
+        SmartLog.fw(TAG, "bindPresenter");
+        mPresenter = initPresenter();
+        mPresenter.attachView(this);
+    }
+
+    public abstract P initPresenter();
+
+    public P getPresenter() {
+        return mPresenter;
     }
 
     /**
@@ -142,6 +150,9 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvpV
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (mPresenter != null) {
+            mPresenter.destroy();
+        }
         AtyManager.getInstance().finish(this);
         SmartLog.lc(TAG, "onDestroy");
     }

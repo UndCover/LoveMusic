@@ -6,21 +6,26 @@ import com.undcover.lovemusic.BR;
 import com.undcover.lovemusic.base.BaseViewModel;
 
 public class MainViewModel extends BaseViewModel {
-    private int count;
+    private String lrc;
+    private String lrcTrans;
 
     @Bindable
-    public int getCount() {
-        return count;
+    public String getLrc() {
+        return lrc;
+    }
+
+    public void setLrc(String lrc) {
+        this.lrc = lrc;
+        notifyPropertyChanged(BR.lrc);
     }
 
     @Bindable
-    public String getCountDesc() {
-        return "getCount: " + count;
+    public String getLrcTrans() {
+        return lrcTrans;
     }
 
-    public void setCount(int count) {
-        this.count = count;
-        notifyPropertyChanged(BR.count);
-        notifyPropertyChanged(BR.countDesc);
+    public void setLrcTrans(String lrcTrans) {
+        this.lrcTrans = lrcTrans;
+        notifyPropertyChanged(BR.lrcTrans);
     }
 }

@@ -9,17 +9,11 @@ public abstract class BaseMvpPresenter<VM extends BaseViewModel> extends MvpBase
 
     public BaseMvpPresenter() {
         if (mViewModel == null) {
-            try {
-                mViewModel = (VM) getViewModelClass().newInstance();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
+            mViewModel = getViewModelInstance();
         }
     }
 
-    public abstract Class getViewModelClass();
+    public abstract VM getViewModelInstance();
 
     /**
      * 绑定视图，设置ViewModel

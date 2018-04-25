@@ -29,16 +29,18 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    implementation project(':provider')
 
-//    kapt "com.android.databinding:compiler:$gradle_version"
+    //    kapt "com.android.databinding:compiler:$gradle_version"
     rootProject.ext.support.each { k, v -> implementation v }
-//    rootProject.ext.kotlin.each { k, v -> implementation v }
-//    rootProject.ext.okhttp3.each { k, v -> implementation v }
-//    rootProject.ext.rxlifecycle.each { k, v -> implementation v }
-//    rootProject.ext.retrofit2.each { k, v -> implementation v }
-//    rootProject.ext.rxjava2.each { k, v -> implementation v }
+    //    rootProject.ext.kotlin.each { k, v -> implementation v }
+    rootProject.ext.okhttp3.each { k, v -> implementation v }
+    rootProject.ext.rxlifecycle.each { k, v -> implementation v }
+    rootProject.ext.retrofit2.each { k, v -> implementation v }
+    rootProject.ext.rxjava2.each { k, v -> implementation v }
     rootProject.ext.library.each { k, v -> implementation v }
 }

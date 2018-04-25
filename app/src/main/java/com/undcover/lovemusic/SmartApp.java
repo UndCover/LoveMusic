@@ -1,10 +1,16 @@
 package com.undcover.lovemusic;
 
 import android.app.Application;
-import android.content.Intent;
 
+import com.undcover.lovemusic.provider.Gate;
 import com.undcover.lovemusic.support.AtyManager;
 import com.undcover.lovemusic.util.SmartLog;
+import com.undcover.lovemusic.util.UtilsJson;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
+import okhttp3.logging.HttpLoggingInterceptor;
 
 /**
  * Created by UndCover on 10/31/17.
@@ -38,5 +44,18 @@ public class SmartApp extends Application {
                         | SmartLog.FILTER_LC
                 );
         SmartLog.TagConstant.TAG_APP = "LoveMusic";     //设置默认tag
+
+        Gate.loggingInterceptor = new HttpLoggingInterceptor((message) -> {
+            String text;
+            try {
+                text = URLDecoder.decode(message, "utf-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+                SmartLog.nw(TAG, message, true);
+                return;
+            }
+            String str = UtilsJson.jsonFormat(text);
+            SmartLog.nw(TAG, str);
+        });
     }
 }

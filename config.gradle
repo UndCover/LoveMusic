@@ -11,7 +11,7 @@ ext {
             versionName      : '1.0.1'
     ]
     kotlin = [
-            "kotlin-stdlib-jre7": "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+//            "kotlin-stdlib-jre7": "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     ]
     support = [
             "appcompat-v7"     : "com.android.support:appcompat-v7:$support_version",
