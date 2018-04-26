@@ -1,18 +1,20 @@
 package com.undcover.lovemusic.provider.bean;
 
-public class LrcListItem {
-    private String title;
+public class SongSimpleInfo {
+    private String name;
     private String artist;
     private String album;
     private String songId;
     private int source;
+    private String lrc;
+    private String token;
 
-    public String getTitle() {
-        return title;
+    public String getName() {
+        return name;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getArtist() {
@@ -45,5 +47,21 @@ public class LrcListItem {
 
     public void setSource(int source) {
         this.source = source;
+    }
+
+    public String getLrc() {
+        return lrc;
+    }
+
+    public void setLrc(String lrc) {
+        this.lrc = lrc;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

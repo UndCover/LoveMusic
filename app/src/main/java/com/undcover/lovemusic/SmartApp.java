@@ -20,6 +20,10 @@ public class SmartApp extends Application {
     private static final String TAG = "SmartApp";
     private static Application sApplicationContext;
 
+    public static Application getApplication() {
+        return sApplicationContext;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();

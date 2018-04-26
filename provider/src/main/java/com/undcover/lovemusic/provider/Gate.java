@@ -1,12 +1,23 @@
 package com.undcover.lovemusic.provider;
 
+import com.undcover.lovemusic.provider.bean.LrcBean;
+import com.undcover.lovemusic.provider.bean.SongSimpleInfo;
 import com.undcover.lovemusic.provider.http.Api;
+import com.undcover.lovemusic.provider.http.UrlHeaderInterceptor;
+import com.undcover.lovemusic.provider.platform.Platform163;
+import com.undcover.lovemusic.provider.platform.PlatformKugou;
+import com.undcover.lovemusic.provider.platform.PlatformQQ;
+import com.undcover.lovemusic.provider.platform.PlatformXiami;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Observable;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.schedulers.Schedulers;
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -52,7 +63,7 @@ public class Gate {
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .baseUrl(Api.URL_LRC_QQ)
+                .baseUrl(Api.URL_LRC_XIAMI)
                 .build();
     }
 
@@ -71,5 +82,38 @@ public class Gate {
 
     public <T> T getService(Class<T> clazz) {
         return retrofit.create(clazz);
+    }
+
+
+    public Observable<List<SongSimpleInfo>> search(String keyword) {
+        //todo 匹配策略
+        return Observable.merge(PlatformQQ.searchList(keyword),
+                Platform163.searchList(keyword),
+                PlatformXiami.searchList(keyword))
+                .subscribeOn(Schedulers.io());
+    }
+
+    public Observable<List<SongSimpleInfo>> search(@NonNull ISongInfo songInfo) {
+        return Observable.merge(PlatformQQ.searchList(songInfo),
+                Platform163.searchList(songInfo),
+                PlatformXiami.searchList(songInfo),
+                PlatformKugou.searchList(songInfo))
+                .subscribeOn(Schedulers.io());
+    }
+
+    public Observable<LrcBean> fetch(SongSimpleInfo info) {
+        if (info != null) {
+            switch (info.getSource()) {
+                case Api.SRC_163:
+                    return Platform163.fetch(info);
+                case Api.SRC_QQ:
+                    return PlatformQQ.fetch(info);
+                case Api.SRC_XIAMI:
+                    return PlatformXiami.fetch(info);
+                case Api.SRC_KUGOU:
+                    return PlatformKugou.fetch(info);
+            }
+        }
+        return null;
     }
 }

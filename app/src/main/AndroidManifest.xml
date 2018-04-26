@@ -28,7 +28,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.view.LrcListActivity"></activity>
+        <activity android:name=".ui.view.LrcListActivity" />
+        <activity android:name=".ui.view.MediaInfoActivity"></activity>
     </application>
 
 </manifest>

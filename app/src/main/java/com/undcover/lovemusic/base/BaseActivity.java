@@ -2,7 +2,9 @@ package com.undcover.lovemusic.base;
 
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
@@ -11,11 +13,13 @@ import com.undcover.lovemusic.support.AtyManager;
 import com.undcover.lovemusic.support.Switcher;
 import com.undcover.lovemusic.util.SmartLog;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+
 /**
  * Created by UndCover on 10/31/17.
  */
 
-public abstract class BaseActivity<B, P extends BaseMvpPresenter,VM> extends AppCompatActivity implements BaseMvpView<VM>{
+public abstract class BaseActivity<B extends ViewDataBinding, P extends BaseMvpPresenter, VM extends BaseViewModel> extends AppCompatActivity implements BaseMvpView<VM> {
     protected String TAG = this.getClass().getSimpleName();
     protected B mBinding;
     protected static SmartApp mApp;
@@ -52,7 +56,7 @@ public abstract class BaseActivity<B, P extends BaseMvpPresenter,VM> extends App
      * 用于自定义View的binding方式
      */
     protected void setContent() {
-        mBinding = (B) DataBindingUtil.setContentView(this, getContentViewId());
+        mBinding = DataBindingUtil.setContentView(this, getContentViewId());
     }
 
     /**
@@ -71,14 +75,19 @@ public abstract class BaseActivity<B, P extends BaseMvpPresenter,VM> extends App
      */
     protected void bindPresenter() {
         SmartLog.fw(TAG, "bindPresenter");
-        mPresenter = initPresenter();
+        mPresenter = createPresenter();
         mPresenter.attachView(this);
     }
 
-    public abstract P initPresenter();
+    @NonNull
+    public abstract P createPresenter();
 
     public P getPresenter() {
         return mPresenter;
+    }
+
+    public void handleAction(int action) {
+
     }
 
     /**
@@ -127,6 +136,13 @@ public abstract class BaseActivity<B, P extends BaseMvpPresenter,VM> extends App
     protected void onStart() {
         super.onStart();
         SmartLog.lc(TAG, "onStart");
+        getPresenter().getEventStream()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(aInt -> {
+                    if (aInt instanceof Integer) {
+                        handleAction((Integer) aInt);
+                    }
+                });
     }
 
     @Override

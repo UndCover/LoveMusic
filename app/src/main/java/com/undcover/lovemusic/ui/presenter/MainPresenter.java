@@ -14,14 +14,14 @@ public class MainPresenter extends BaseMvpPresenter<MainViewModel> {
     }
 
     public void sendAction() {
-        PlatformQQ qq = new PlatformQQ();
-        Disposable disposable = qq.search("誰かが待ってる", 0)
-                .observeOn(Schedulers.io())
-                .flatMap(songs -> qq.fetch(songs.get(0)))
-                .observeOn(Schedulers.io())     //由于使用VM自动刷新UI,所以这里不需要切换线程来处理
-                .subscribe(lrcQQ -> {
-                    mViewModel.setLrc(lrcQQ.getLyric());
-                    mViewModel.setLrcTrans(lrcQQ.getTrans());
-                });
+//        PlatformQQ qq = new PlatformQQ();
+//        Disposable disposable = qq.searchSingle("誰かが待ってる", 0)
+//                .observeOn(Schedulers.io())
+//                .flatMap(songs -> qq.fetch(songs.get(0)))
+//                .observeOn(Schedulers.io())     //由于使用VM自动刷新UI,所以这里不需要切换线程来处理
+//                .subscribe(lrcBean -> {
+//                    mViewModel.setLrc(lrcQQ.getLyric());
+//                    mViewModel.setLrcTrans(lrcQQ.getTrans());
+//                });
     }
 }

@@ -1,6 +1,4 @@
-package com.undcover.lovemusic.provider;
-
-import com.undcover.lovemusic.provider.http.Api;
+package com.undcover.lovemusic.provider.http;
 
 import java.io.IOException;
 import java.util.List;
@@ -33,9 +31,9 @@ public class UrlHeaderInterceptor implements Interceptor {
                 baseURL = HttpUrl.parse(Api.URL_LRC_QQ);
             } else if ("lrc_163".equals(baseUrl)) {
                 baseURL = HttpUrl.parse(Api.URL_LRC_163);
-            } else if ("lrc_xiami".equals(Api.URL_LRC_XIAMI)) {
+            } else if ("lrc_xiami".equals(baseUrl)) {
                 baseURL = HttpUrl.parse(Api.URL_LRC_XIAMI);
-            } else if ("lrc_kugou".equals(Api.URL_LRC_KUGOU)) {
+            } else if ("lrc_kugou".equals(baseUrl)) {
                 baseURL = HttpUrl.parse(Api.URL_LRC_KUGOU);
             }
             //重建新的HttpUrl，需要重新设置的url部分
