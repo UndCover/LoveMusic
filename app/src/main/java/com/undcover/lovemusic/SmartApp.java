@@ -2,7 +2,7 @@ package com.undcover.lovemusic;
 
 import android.app.Application;
 
-import com.undcover.lovemusic.provider.Gate;
+import com.undcover.lovemusic.provider.LrcProvider;
 import com.undcover.lovemusic.support.AtyManager;
 import com.undcover.lovemusic.util.SmartLog;
 import com.undcover.lovemusic.util.UtilsJson;
@@ -49,7 +49,7 @@ public class SmartApp extends Application {
                 );
         SmartLog.TagConstant.TAG_APP = "LoveMusic";     //设置默认tag
 
-        Gate.loggingInterceptor = new HttpLoggingInterceptor((message) -> {
+        LrcProvider.loggingInterceptor = new HttpLoggingInterceptor((message) -> {
             String text;
             try {
                 text = URLDecoder.decode(message, "utf-8");

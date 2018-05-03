@@ -1,12 +1,13 @@
 package com.undcover.lovemusic.provider.platform;
 
-import com.undcover.lovemusic.provider.Gate;
+import com.undcover.lovemusic.provider.LrcProvider;
 import com.undcover.lovemusic.provider.ISongInfo;
-import com.undcover.lovemusic.provider.bean.Lrc163;
 import com.undcover.lovemusic.provider.bean.LrcBean;
+import com.undcover.lovemusic.provider.bean.LyricsBean;
 import com.undcover.lovemusic.provider.bean.SongSimpleInfo;
 import com.undcover.lovemusic.provider.bean.Search163;
 import com.undcover.lovemusic.provider.http.Api;
+import com.undcover.lovemusic.provider.parser.LrcParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +40,7 @@ public class Platform163 {
 
 
     public static Observable<Search163> search(String songName) {
-        return Gate.getInstance()
+        return LrcProvider.getInstance()
                 .getService(RequestCollection.class)
                 .search163(songName);
     }
@@ -49,14 +50,16 @@ public class Platform163 {
     }
 
     public static Observable<LrcBean> fetch(String songId) {
-        return Gate.getInstance()
+        return LrcProvider.getInstance()
                 .getService(RequestCollection.class)
                 .fetch163(songId)
                 .map(lrc163 -> {
                     LrcBean lrcBean = new LrcBean();
-                    lrcBean.setSource(Api.SRC_163);
-                    lrcBean.setLrc(lrc163.getLrc().getLyric());
-                    lrcBean.setLrcTrans(lrc163.getTlyric().getLyric());
+                    if (!lrc163.getUncollected()) {
+                        lrcBean.setSource(Api.SRC_163);
+                        lrcBean.setLrc(lrc163.getLrc().getLyric());
+                        lrcBean.setLrcTrans(lrc163.getTlyric().getLyric());
+                    }
                     return lrcBean;
                 });
     }

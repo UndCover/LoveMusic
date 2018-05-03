@@ -3,7 +3,7 @@ package com.undcover.lovemusic.ui.presenter;
 import android.media.MediaMetadataRetriever;
 
 import com.undcover.lovemusic.base.BaseMvpPresenter;
-import com.undcover.lovemusic.provider.Gate;
+import com.undcover.lovemusic.provider.LrcProvider;
 import com.undcover.lovemusic.provider.bean.SongSimpleInfo;
 import com.undcover.lovemusic.ui.model.LrcListViewModel;
 import com.undcover.lovemusic.ui.model.MediaInfoViewModel;
@@ -22,7 +22,7 @@ public class LrcListPresenter extends BaseMvpPresenter<LrcListViewModel> {
     }
 
     public void getLrcList(String keyword) {
-        Gate.getInstance().search(keyword)
+        LrcProvider.getInstance().search(keyword)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(disposable -> mViewModel.getLrcListItem().clear())
                 .subscribe(songs -> {
@@ -36,7 +36,7 @@ public class LrcListPresenter extends BaseMvpPresenter<LrcListViewModel> {
     }
 
     public void searchLrc(String songName) {
-        Gate.getInstance().search(getMediaInfo(songName))
+        LrcProvider.getInstance().search(getMediaInfo(songName))
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(disposable -> mViewModel.getLrcListItem().clear())
                 .subscribe(songs -> {
@@ -79,7 +79,7 @@ public class LrcListPresenter extends BaseMvpPresenter<LrcListViewModel> {
     }
 
     public void fetchLrc(SongSimpleInfo lrc) {
-        Disposable disposable = Gate.getInstance().fetch(lrc)
+        Disposable disposable = LrcProvider.getInstance().fetch(lrc)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(lrcBean -> {
                     if (lrcBean == null) {
@@ -87,6 +87,21 @@ public class LrcListPresenter extends BaseMvpPresenter<LrcListViewModel> {
                     }
                     mViewModel.setLrc(lrcBean.getLrc());
                     mViewModel.setLrcTrans(lrcBean.getLrcTrans());
+                    getEmitter().onNext(LrcListActivity.ACT_LRC_DIALOG);
+                });
+    }
+
+    public void fetchCombineLrc(SongSimpleInfo lrc) {
+        Disposable disposable = LrcProvider.getInstance().fetchLyrics(lrc)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(lyricsBean -> {
+                    if (lyricsBean == null) {
+                        return;
+                    }
+                    String lrcString = lyricsBean.toString();
+                    SmartLog.d(TAG, lrcString);
+                    mViewModel.setLrc(lrcString);
+                    mViewModel.setLrcTrans(null);
                     getEmitter().onNext(LrcListActivity.ACT_LRC_DIALOG);
                 });
     }

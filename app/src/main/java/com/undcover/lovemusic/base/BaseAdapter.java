@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.undcover.lovemusic.R;
-import com.undcover.lovemusic.util.SmartLog;
 
 import java.util.List;
 
@@ -60,13 +59,19 @@ public abstract class BaseAdapter<T, B extends ViewDataBinding> extends Recycler
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         ViewHolder mHolder = (ViewHolder) holder;
         mBinding = (B) mHolder.getBinding();
-        mBinding.getRoot().setTag(R.id.index_adapter, position);
-        bindView(position);
+        bindView(mBinding, position);
         mBinding.executePendingBindings(); //此方法必须执行在UI线程，
     }
 
-    public void bindView(int position) {
+    public void bindViewClick(View view, int position) {
+        view.setTag(R.id.index_adapter, position);
+        view.setOnClickListener(this);
+    }
 
+    public abstract void bindView(B binding, int position);
+
+    public List<T> getItemList() {
+        return itemList;
     }
 
     @Override

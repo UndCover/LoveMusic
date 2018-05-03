@@ -1,12 +1,12 @@
 package com.undcover.lovemusic.provider.platform;
 
-import com.undcover.lovemusic.provider.Gate;
 import com.undcover.lovemusic.provider.ISongInfo;
+import com.undcover.lovemusic.provider.LrcProvider;
 import com.undcover.lovemusic.provider.bean.LrcBean;
 import com.undcover.lovemusic.provider.bean.SearchKugou;
-import com.undcover.lovemusic.provider.bean.SearchXiami;
 import com.undcover.lovemusic.provider.bean.SongSimpleInfo;
 import com.undcover.lovemusic.provider.http.Api;
+import com.undcover.lovemusic.provider.util.Base64;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +40,7 @@ public class PlatformKugou {
     }
 
     public static Observable<SearchKugou> search(String songName, String duration) {
-        return Gate.getInstance()
+        return LrcProvider.getInstance()
                 .getService(RequestCollection.class)
                 .searchKugou(songName, duration);
     }
@@ -50,13 +50,13 @@ public class PlatformKugou {
     }
 
     public static Observable<LrcBean> fetch(SongSimpleInfo info) {
-        return Gate.getInstance()
+        return LrcProvider.getInstance()
                 .getService(RequestCollection.class)
                 .fetchKugou(info.getSongId(), info.getToken())
                 .map(lrcKugou -> {
                     LrcBean lrcBean = new LrcBean();
                     lrcBean.setSource(Api.SRC_KUGOU);
-                    lrcBean.setLrc(lrcKugou.getContent());
+                    lrcBean.setLrc(Base64.decode(lrcKugou.getContent()));
                     lrcBean.setLrcTrans("");
                     return lrcBean;
                 }).subscribeOn(Schedulers.io());

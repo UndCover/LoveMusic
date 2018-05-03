@@ -1,13 +1,14 @@
 package com.undcover.lovemusic.provider.platform;
 
 import com.google.gson.Gson;
-import com.undcover.lovemusic.provider.Gate;
 import com.undcover.lovemusic.provider.ISongInfo;
+import com.undcover.lovemusic.provider.LrcProvider;
 import com.undcover.lovemusic.provider.bean.LrcBean;
-import com.undcover.lovemusic.provider.bean.SongSimpleInfo;
 import com.undcover.lovemusic.provider.bean.LrcQQ;
 import com.undcover.lovemusic.provider.bean.SearchQQ;
+import com.undcover.lovemusic.provider.bean.SongSimpleInfo;
 import com.undcover.lovemusic.provider.http.Api;
+import com.undcover.lovemusic.provider.parser.LrcParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +40,7 @@ public class PlatformQQ {
     }
 
     public static Observable<SearchQQ> search(String songName) {
-        return Gate.getInstance()
+        return LrcProvider.getInstance()
                 .getService(RequestCollection.class)
                 .searchQQ(songName);
     }
@@ -52,7 +53,7 @@ public class PlatformQQ {
         if (songId == null) {
             return null;
         }
-        return Gate.getInstance()
+        return LrcProvider.getInstance()
                 .getService(RequestCollection.class)
                 .fetchQQ(songId)
                 .map(responseBody -> {

@@ -1,6 +1,7 @@
 package com.undcover.lovemusic.ui.view;
 
 import android.support.annotation.NonNull;
+import android.util.Base64;
 
 import com.undcover.lovemusic.R;
 import com.undcover.lovemusic.base.BaseActivity;

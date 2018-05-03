@@ -1,6 +1,6 @@
 package com.undcover.lovemusic.provider.platform;
 
-import com.undcover.lovemusic.provider.Gate;
+import com.undcover.lovemusic.provider.LrcProvider;
 import com.undcover.lovemusic.provider.ISongInfo;
 import com.undcover.lovemusic.provider.bean.LrcBean;
 import com.undcover.lovemusic.provider.bean.SongSimpleInfo;
@@ -39,7 +39,7 @@ public class PlatformXiami {
     }
 
     public static Observable<SearchXiami> search(String songName) {
-        return Gate.getInstance()
+        return LrcProvider.getInstance()
                 .getService(RequestCollection.class)
                 .searchXiami(songName);
     }

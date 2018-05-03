@@ -6,10 +6,12 @@ import android.widget.LinearLayout;
 
 import com.undcover.lovemusic.R;
 import com.undcover.lovemusic.base.BaseActivity;
+import com.undcover.lovemusic.base.BaseAdapter;
 import com.undcover.lovemusic.base.SmartDialog;
 import com.undcover.lovemusic.databinding.ActivityLrcListBinding;
+import com.undcover.lovemusic.databinding.ItemLrcListBinding;
+import com.undcover.lovemusic.provider.bean.SongSimpleInfo;
 import com.undcover.lovemusic.support.MarginDecoration;
-import com.undcover.lovemusic.ui.adapter.LrcListAdapter;
 import com.undcover.lovemusic.ui.dialog.LrcDialog;
 import com.undcover.lovemusic.ui.model.LrcListViewModel;
 import com.undcover.lovemusic.ui.presenter.LrcListPresenter;
@@ -30,15 +32,9 @@ public class LrcListActivity extends BaseActivity<ActivityLrcListBinding, LrcLis
     public void setViewModel(LrcListViewModel viewModel) {
         mBinding.setViewModel(viewModel);
 
-        adapter = new LrcListAdapter();
         adapter.setDataList(viewModel.getLrcListItem());
-        adapter.setItemClickListener((view, position) -> getPresenter().fetchLrc(viewModel.getLrcListItem().get(position)));
+        adapter.setItemClickListener((view, position) -> getPresenter().fetchCombineLrc(viewModel.getLrcListItem().get(position)));
     }
-
-//    @Override
-//    public void notifyDataChanged() {
-//        adapter.notifyDataSetChanged();
-//    }
 
     @Override
     protected void initChildData() {
@@ -51,7 +47,19 @@ public class LrcListActivity extends BaseActivity<ActivityLrcListBinding, LrcLis
         mBinding.btnSearchLocal.setOnClickListener(view -> getPresenter().searchLrc("zard.mp3"));
     }
 
-    LrcListAdapter adapter;
+    //实例化 Adapter
+    BaseAdapter adapter = new BaseAdapter<SongSimpleInfo, ItemLrcListBinding>() {
+        @Override
+        public int getLayoutId() {
+            return R.layout.item_lrc_list;
+        }
+
+        @Override
+        public void bindView(ItemLrcListBinding binding, int position) {
+            binding.setViewModel(getItemList().get(position));
+            bindViewClick(binding.tvSource, position);       //绑定事件到View
+        }
+    };
 
     @Override
     protected void initListView() {
