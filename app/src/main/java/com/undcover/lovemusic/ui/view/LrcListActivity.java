@@ -1,22 +1,28 @@
 package com.undcover.lovemusic.ui.view;
 
+import android.databinding.ViewDataBinding;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.widget.LinearLayout;
 
 import com.undcover.lovemusic.R;
 import com.undcover.lovemusic.base.BaseActivity;
-import com.undcover.lovemusic.base.BaseAdapter;
 import com.undcover.lovemusic.base.SmartDialog;
 import com.undcover.lovemusic.databinding.ActivityLrcListBinding;
 import com.undcover.lovemusic.databinding.ItemLrcListBinding;
+import com.undcover.lovemusic.databinding.ItemLrcListLeftBinding;
 import com.undcover.lovemusic.provider.bean.SongSimpleInfo;
+import com.undcover.lovemusic.support.DataBindingItemViewBinder;
+import com.undcover.lovemusic.support.Linker;
 import com.undcover.lovemusic.support.MarginDecoration;
 import com.undcover.lovemusic.ui.dialog.LrcDialog;
 import com.undcover.lovemusic.ui.model.LrcListViewModel;
 import com.undcover.lovemusic.ui.presenter.LrcListPresenter;
 
-public class LrcListActivity extends BaseActivity<ActivityLrcListBinding, LrcListPresenter, LrcListViewModel> {
+import java.util.ArrayList;
+import java.util.List;
+
+public class LrcListActivity extends BaseActivity<ActivityLrcListBinding, LrcListPresenter, LrcListViewModel> implements DataBindingItemViewBinder.OnBindItem {
     @Override
     public int getContentViewId() {
         return R.layout.activity_lrc_list;
@@ -31,9 +37,6 @@ public class LrcListActivity extends BaseActivity<ActivityLrcListBinding, LrcLis
     @Override
     public void setViewModel(LrcListViewModel viewModel) {
         mBinding.setViewModel(viewModel);
-
-        adapter.setDataList(viewModel.getLrcListItem());
-        adapter.setItemClickListener((view, position) -> getPresenter().fetchCombineLrc(viewModel.getLrcListItem().get(position)));
     }
 
     @Override
@@ -47,26 +50,19 @@ public class LrcListActivity extends BaseActivity<ActivityLrcListBinding, LrcLis
         mBinding.btnSearchLocal.setOnClickListener(view -> getPresenter().searchLrc("zard.mp3"));
     }
 
-    //实例化 Adapter
-    BaseAdapter adapter = new BaseAdapter<SongSimpleInfo, ItemLrcListBinding>() {
-        @Override
-        public int getLayoutId() {
-            return R.layout.item_lrc_list;
-        }
+    public final List<Linker> linkerList = new ArrayList<>();
 
-        @Override
-        public void bindView(ItemLrcListBinding binding, int position) {
-            binding.setViewModel(getItemList().get(position));
-            bindViewClick(binding.tvSource, position);       //绑定事件到View
-        }
-    };
+    {
+        linkerList.add(new Linker(o -> ((SongSimpleInfo) o).getSource() % 2 != 0, R.layout.item_lrc_list));
+        linkerList.add(new Linker(o -> ((SongSimpleInfo) o).getSource() % 2 == 0, R.layout.item_lrc_list_left));
+    }
 
     @Override
     protected void initListView() {
         super.initListView();
         mBinding.rvLrc.setLayoutManager(new LinearLayoutManager(this, LinearLayout.VERTICAL, false));
         mBinding.rvLrc.addItemDecoration(new MarginDecoration(getApplicationContext(), 0, 1));
-        mBinding.rvLrc.setAdapter(adapter);
+        mBinding.setBindCallback(this);
     }
 
     public static final int ACT_DATA_REFRESH = 1;
@@ -76,7 +72,7 @@ public class LrcListActivity extends BaseActivity<ActivityLrcListBinding, LrcLis
     public void handleAction(int action) {
         switch (action) {
             case ACT_DATA_REFRESH:
-                adapter.notifyDataSetChanged();
+//                adapter.notifyDataSetChanged();
                 break;
             case ACT_LRC_DIALOG:
                 showDialog();
@@ -94,5 +90,19 @@ public class LrcListActivity extends BaseActivity<ActivityLrcListBinding, LrcLis
                 .setSupportFragmentManager(getSupportFragmentManager())
                 .create(LrcDialog.class);
         lrcDialog.setViewModel(mBinding.getViewModel()).show();
+    }
+
+    @Override
+    public void onBind(ViewDataBinding binding, Object data, int position) {
+        SongSimpleInfo ssi = (SongSimpleInfo) data;
+        if (binding instanceof ItemLrcListBinding) {
+            ItemLrcListBinding itemBinding = (ItemLrcListBinding) binding;
+            itemBinding.setViewModel(ssi);
+            itemBinding.tvSource.setOnClickListener(view -> getPresenter().fetchCombineLrc(ssi));
+        } else {
+            ItemLrcListLeftBinding itemBinding = (ItemLrcListLeftBinding) binding;
+            itemBinding.setViewModel(ssi);
+            itemBinding.tvSource.setOnClickListener(view -> getPresenter().fetchCombineLrc(ssi));
+        }
     }
 }

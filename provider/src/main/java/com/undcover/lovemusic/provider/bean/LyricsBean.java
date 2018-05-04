@@ -26,8 +26,10 @@ public class LyricsBean {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < lyrics.size(); i++) {
-            sb.append(lyrics.get(i));
+        if (lyrics != null) {
+            for (SingleLine line : lyrics) {
+                sb.append(line);
+            }
         }
         return sb.toString();
     }

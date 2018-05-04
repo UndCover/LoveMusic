@@ -15,6 +15,7 @@ public class LrcListViewModel extends BaseViewModel {
     private String lrc;
     private String lrcTrans;
 
+    @Bindable
     public List<SongSimpleInfo> getLrcListItem() {
         return lrcListItem;
     }
@@ -22,10 +23,12 @@ public class LrcListViewModel extends BaseViewModel {
     public void setLrcListItem(List<SongSimpleInfo> lrcListItem) {
         this.lrcListItem.clear();
         this.lrcListItem.addAll(lrcListItem);
+        notifyPropertyChanged(BR.lrcListItem);
     }
 
     public void addLrcListItem(List<SongSimpleInfo> lrcListItem) {
         this.lrcListItem.addAll(lrcListItem);
+        notifyPropertyChanged(BR.lrcListItem);
     }
 
     public LrcListViewModel() {

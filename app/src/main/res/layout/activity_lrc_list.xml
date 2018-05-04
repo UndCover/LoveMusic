@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -7,6 +8,13 @@
         <variable
             name="viewModel"
             type="com.undcover.lovemusic.ui.model.LrcListViewModel" />
+
+        <variable
+            name="bindCallback"
+            type="com.undcover.lovemusic.ui.view.LrcListActivity" />
+        <!--<variable-->
+        <!--name="bindCallback"-->
+        <!--type="com.undcover.lovemusic.support.DataBindingItemViewBinder.OnBindItem" />-->
     </data>
 
     <LinearLayout
@@ -44,6 +52,9 @@
             android:id="@+id/rv_lrc"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            app:dataList="@{viewModel.lrcListItem}"
+            app:linker="@{bindCallback.linkerList }"
+            app:onBindItem="@{bindCallback::onBind }" />
     </LinearLayout>
 </layout>

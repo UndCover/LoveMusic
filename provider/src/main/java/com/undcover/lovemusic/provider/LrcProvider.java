@@ -120,8 +120,12 @@ public class LrcProvider {
     public Observable<LyricsBean> fetchLyrics(SongSimpleInfo info) {
         return fetch(info).map(lrcBean -> {
             LyricsBean lyricsBean = LrcParser.getCombineLyrics(lrcBean.getLrc(), lrcBean.getLrcTrans());
-            lyricsBean.setSource(lrcBean.getSource());
-            return lyricsBean;
+            if (lyricsBean != null) {
+                lyricsBean.setSource(lrcBean.getSource());
+                return lyricsBean;
+            } else {
+                return new LyricsBean();
+            }
         });
     }
 }

@@ -45,12 +45,12 @@ public abstract class BaseAdapter<T, B extends ViewDataBinding> extends Recycler
         }
     }
 
-    public abstract int getLayoutId();
+    public abstract int getLayoutId(int type);
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         mInflater = LayoutInflater.from(parent.getContext());
-        ViewDataBinding binding = DataBindingUtil.inflate(mInflater, getLayoutId(), parent, false);
+        ViewDataBinding binding = DataBindingUtil.inflate(mInflater, getLayoutId(viewType), parent, false);
         ViewHolder holder = new ViewHolder(binding);
         return holder;
     }
@@ -59,19 +59,32 @@ public abstract class BaseAdapter<T, B extends ViewDataBinding> extends Recycler
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         ViewHolder mHolder = (ViewHolder) holder;
         mBinding = (B) mHolder.getBinding();
-        bindView(mBinding, position);
+        bindView(mBinding, itemList.get(position), position);
         mBinding.executePendingBindings(); //此方法必须执行在UI线程，
     }
 
+    /**
+     * 用于设置item点击事件
+     *
+     * @param view
+     * @param position
+     */
     public void bindViewClick(View view, int position) {
         view.setTag(R.id.index_adapter, position);
         view.setOnClickListener(this);
     }
 
-    public abstract void bindView(B binding, int position);
+    public abstract void bindView(B binding, T itemData, int position);
 
     public List<T> getItemList() {
         return itemList;
+    }
+
+    public T getItem(int position) {
+        if (itemList != null && position <= itemList.size()) {
+            return itemList.get(position);
+        }
+        return null;
     }
 
     @Override
